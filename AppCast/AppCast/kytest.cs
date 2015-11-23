@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppCast
 {
-    class kytestcs
+    class kytest
     {
     }
 }
