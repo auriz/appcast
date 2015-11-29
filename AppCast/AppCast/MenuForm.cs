@@ -10,11 +10,18 @@ using System.Windows.Forms;
 
 namespace AppCast
 {
-    public partial class Form1 : Form
+    public partial class MenuForm : Form
     {
-        public Form1()
+        public MenuForm()
         {
             InitializeComponent();
+        }
+
+        private void Logout_Click(object sender, EventArgs e)
+        {
+            LoginForm obj1 = new LoginForm();
+            obj1.Show();
+            this.Close();
         }
     }
 }
