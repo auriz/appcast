@@ -11,7 +11,7 @@ using MetroFramework.Forms;
 
 namespace AppCast
 {
-    public partial class Meeting : MetroFramework.Forms.MetroForm
+    public partial class Meeting : MetroForm
     {
         public Meeting()
         {
