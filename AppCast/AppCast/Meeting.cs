@@ -10,18 +10,11 @@ using System.Windows.Forms;
 
 namespace AppCast
 {
-    public partial class Form1 : Form
+    public partial class Meeting : Form
     {
-        public Form1()
+        public Meeting()
         {
             InitializeComponent();
-        }
-
-        private void customizeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Meeting meet = new Meeting();
-            meet.Show();
-            this.Hide();
         }
     }
 }
