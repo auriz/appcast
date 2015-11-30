@@ -15,7 +15,7 @@ namespace AppCast
     {
         public Meeting()
         {
-            InitializeComponent();
+           // InitializeComponent();
         }
     }
 }
