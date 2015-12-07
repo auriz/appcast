@@ -9,7 +9,6 @@ namespace AppCast.Model
     class KeyManager
     {
         private int keyID;
-
         public int KeyID
         {
             get { return keyID; }

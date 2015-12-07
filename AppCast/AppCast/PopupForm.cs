@@ -7,21 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MetroFramework.Forms;
 
 namespace AppCast
 {
-    public partial class Form1 : Form
+    public partial class PopupForm : MetroForm
     {
-        public Form1()
+        public MetroForm form;
+        public PopupForm(MetroForm pForm)
         {
             InitializeComponent();
+            form = pForm;
         }
 
-        private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void metroButton1_Click(object sender, EventArgs e)
         {
-            Meeting meet = new Meeting();
-            meet.Show();
-            this.Hide();
+            form.Enabled = true;
+            this.Dispose();
         }
     }
 }

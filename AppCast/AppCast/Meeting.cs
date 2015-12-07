@@ -17,5 +17,24 @@ namespace AppCast
         {
             InitializeComponent();
         }
+
+        private void Meeting_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'appCastDataSet.Room' table. You can move, or remove it, as needed.
+            this.roomTableAdapter.Fill(this.appCastDataSet.Room);
+            //dataGridView1.DataSource = 
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void metroButton1_Click(object sender, EventArgs e)
+        {
+            PopupForm success = new PopupForm(this);
+            success.Show();
+            this.Enabled = false;
+        }
     }
 }

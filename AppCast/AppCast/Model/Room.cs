@@ -9,7 +9,6 @@ namespace AppCast.Model
     class Room
     {
         private int roomID;
-
         public int RoomID
         {
             get { return roomID; }
