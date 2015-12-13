@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MetroFramework.Forms;
+using AppCast.Data;
 
 namespace AppCast
 {
@@ -20,21 +21,42 @@ namespace AppCast
 
         private void Meeting_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'appCastDataSet.Room' table. You can move, or remove it, as needed.
-            this.roomTableAdapter.Fill(this.appCastDataSet.Room);
-            //dataGridView1.DataSource = 
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
+            listBox2.DataSource = new MeetingController().getRoom("admin");
+            listBox1.DataSource = new MeetingController().getUsers("admin");
         }
 
         private void metroButton1_Click(object sender, EventArgs e)
         {
-            PopupForm success = new PopupForm(this);
-            success.Show();
+            string roomUsers = "";
+            foreach (string s in listBox1.SelectedItems)
+            {
+                roomUsers += "," + s;
+            }
+            roomUsers = roomUsers.Substring(1);
+            if (new MeetingController().createRoom("admin", tbRoomTitle.Text, roomUsers))
+            {
+                PopupForm success = new PopupForm(this);
+                success.Show();
+                this.Enabled = false;
+                reset();
+            }
+            else
+            {
+                
+            }
+        }
+
+        private void metroButton3_Click(object sender, EventArgs e)
+        {
+            VideoConf conf = new VideoConf();
+            conf.Show();
             this.Enabled = false;
+        }
+
+        private void reset()
+        {
+            tbRoomTitle.Text = "";
+            listBox1.Refresh();
         }
     }
 }

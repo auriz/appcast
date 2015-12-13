@@ -26,6 +26,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +49,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="MetroFramework">
       <HintPath>..\packages\MetroFramework.RunTime.1.2.0.3\lib\net40-Client\MetroFramework.dll</HintPath>
     </Reference>
@@ -58,7 +66,11 @@
       <HintPath>..\packages\MetroFramework.Fonts.1.2.0.3\lib\net40\MetroFramework.Fonts.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,11 +86,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppCastDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="AppCastDataSet1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AppCastDataSet1.xsd</DependentUpon>
-    </Compile>
+    <Compile Include="Data\MeetingController.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,8 +99,42 @@
     <Compile Include="Meeting.Designer.cs">
       <DependentUpon>Meeting.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\KeyManager.cs" />
-    <Compile Include="Model\Room.cs" />
+    <Compile Include="Model\appcast.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>appcast.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\appcast.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\appcast.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>appcast.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\AppUser.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Chat.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\File.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FileShare.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\KeyManager.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Role.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Room.cs">
+      <DependentUpon>appcast.tt</DependentUpon>
+    </Compile>
     <Compile Include="PopupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +143,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\VideoServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="VideoConf.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoConf.Designer.cs">
+      <DependentUpon>VideoConf.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -118,7 +171,11 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="VideoConf.resx">
+      <DependentUpon>VideoConf.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="AppCastDataSet.xsc">
       <DependentUpon>AppCastDataSet.xsd</DependentUpon>
     </None>
@@ -130,16 +187,22 @@
     <None Include="AppCastDataSet.xss">
       <DependentUpon>AppCastDataSet.xsd</DependentUpon>
     </None>
-    <None Include="AppCastDataSet1.xsc">
-      <DependentUpon>AppCastDataSet1.xsd</DependentUpon>
+    <EntityDeploy Include="Model\appcast.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>appcast.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Model\appcast.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>appcast.edmx</DependentUpon>
+      <LastGenOutput>appcast.Context.cs</LastGenOutput>
     </None>
-    <None Include="AppCastDataSet1.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>AppCastDataSet1.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
+    <None Include="Model\appcast.edmx.diagram">
+      <DependentUpon>appcast.edmx</DependentUpon>
     </None>
-    <None Include="AppCastDataSet1.xss">
-      <DependentUpon>AppCastDataSet1.xsd</DependentUpon>
+    <None Include="Model\appcast.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>appcast.edmx</DependentUpon>
+      <LastGenOutput>appcast.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -151,9 +214,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Service References\VideoServiceReference\service.wsdl" />
+    <None Include="Service References\VideoServiceReference\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\VideoServiceReference\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -180,10 +252,29 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>AppCast.mdf</DependentUpon>
     </Content>
+    <Content Include="Resources\test.jpg" />
     <Content Include="MetroFramework.txt" />
+    <None Include="Service References\VideoServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\VideoServiceReference\configuration.svcinfo" />
+    <None Include="Service References\VideoServiceReference\configuration91.svcinfo" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\VideoServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
