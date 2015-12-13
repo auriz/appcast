@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1341b9c738524b449f51df77396b563c" Name="Diagram1">
+        <EntityTypeShape EntityType="AppCastModel.AppUser" Width="1.5" PointX="3" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AppCastModel.Chat" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AppCastModel.KeyManager" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="AppCastModel.Role" Width="1.5" PointX="0.75" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AppCastModel.Room" Width="1.5" PointX="3" PointY="6.75" IsExpanded="true" />
+        <AssociationConnector Association="AppCastModel.FK_AppUser_Role" ManuallyRouted="false" />
+        <AssociationConnector Association="AppCastModel.FK_Chat_AppUser" ManuallyRouted="false" />
+        <AssociationConnector Association="AppCastModel.FK_Chat_Room" ManuallyRouted="false" />
+        <AssociationConnector Association="AppCastModel.FK_Room_KeyManager" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="AppCastModel.File" Width="1.5" PointX="5.25" PointY="5.625" />
+        <AssociationConnector Association="AppCastModel.FK_File_AppUser" />
+        <EntityTypeShape EntityType="AppCastModel.FileShare" Width="1.5" PointX="7.5" PointY="4.125" />
+        <AssociationConnector Association="AppCastModel.FK_FileShare_AppUser" />
+        <AssociationConnector Association="AppCastModel.FK_FileShare_File" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

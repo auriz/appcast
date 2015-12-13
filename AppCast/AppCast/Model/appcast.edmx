@@ -1,0 +1,515 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AppCastModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AppUser">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="passwordSalt" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="enable2fa" Type="bit" Nullable="false" />
+          <Property Name="gender" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="role" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Chat">
+          <Key>
+            <PropertyRef Name="messageID" />
+            <PropertyRef Name="roomID" />
+          </Key>
+          <Property Name="messageID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="roomID" Type="int" Nullable="false" />
+          <Property Name="userID" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="message" Type="nvarchar" MaxLength="1024" Nullable="false" />
+          <Property Name="messageDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Files">
+          <Key>
+            <PropertyRef Name="fileID" />
+          </Key>
+          <Property Name="fileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="filePath" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="fileName" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="fileDesc" Type="nvarchar" MaxLength="1024" Nullable="false" />
+          <Property Name="uploadDate" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="uploaderID" Type="nvarchar" MaxLength="64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileShare">
+          <Key>
+            <PropertyRef Name="fileID" />
+            <PropertyRef Name="shareUser" />
+          </Key>
+          <Property Name="fileID" Type="int" Nullable="false" />
+          <Property Name="shareUser" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="shareDate" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="permission" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="KeyManager">
+          <Key>
+            <PropertyRef Name="keyID" />
+          </Key>
+          <Property Name="keyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="symKey" Type="nvarchar" MaxLength="512" Nullable="false" />
+          <Property Name="symKey2" Type="nvarchar" MaxLength="512" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="roleID" />
+          </Key>
+          <Property Name="roleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="roleName" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Room">
+          <Key>
+            <PropertyRef Name="roomID" />
+          </Key>
+          <Property Name="roomID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="roomTitle" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="roomUser" Type="nvarchar" MaxLength="1024" Nullable="false" />
+          <Property Name="keyID" Type="int" Nullable="false" />
+          <Property Name="createDate" Type="datetime" Nullable="false" />
+          <Property Name="createUser" Type="nvarchar" MaxLength="64" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AppUser_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="roleID" />
+            </Principal>
+            <Dependent Role="AppUser">
+              <PropertyRef Name="role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chat_AppUser">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="Chat" Type="Self.Chat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Chat">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chat_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="1" />
+          <End Role="Chat" Type="Self.Chat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="roomID" />
+            </Principal>
+            <Dependent Role="Chat">
+              <PropertyRef Name="roomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_File_AppUser">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="Files" Type="Self.Files" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Files">
+              <PropertyRef Name="uploaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileShare_AppUser">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="FileShare" Type="Self.FileShare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="FileShare">
+              <PropertyRef Name="shareUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileShare_File">
+          <End Role="Files" Type="Self.Files" Multiplicity="1" />
+          <End Role="FileShare" Type="Self.FileShare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Files">
+              <PropertyRef Name="fileID" />
+            </Principal>
+            <Dependent Role="FileShare">
+              <PropertyRef Name="fileID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Room_KeyManager">
+          <End Role="KeyManager" Type="Self.KeyManager" Multiplicity="1" />
+          <End Role="Room" Type="Self.Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KeyManager">
+              <PropertyRef Name="keyID" />
+            </Principal>
+            <Dependent Role="Room">
+              <PropertyRef Name="keyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AppCastModelStoreContainer">
+          <EntitySet Name="AppUser" EntityType="Self.AppUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Chat" EntityType="Self.Chat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileShare" EntityType="Self.FileShare" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KeyManager" EntityType="Self.KeyManager" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AppUser_Role" Association="Self.FK_AppUser_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="AppUser" EntitySet="AppUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chat_AppUser" Association="Self.FK_Chat_AppUser">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="Chat" EntitySet="Chat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chat_Room" Association="Self.FK_Chat_Room">
+            <End Role="Room" EntitySet="Room" />
+            <End Role="Chat" EntitySet="Chat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_File_AppUser" Association="Self.FK_File_AppUser">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="Files" EntitySet="Files" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileShare_AppUser" Association="Self.FK_FileShare_AppUser">
+            <End Role="AppUser" EntitySet="AppUser" />
+            <End Role="FileShare" EntitySet="FileShare" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileShare_File" Association="Self.FK_FileShare_File">
+            <End Role="Files" EntitySet="Files" />
+            <End Role="FileShare" EntitySet="FileShare" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Room_KeyManager" Association="Self.FK_Room_KeyManager">
+            <End Role="KeyManager" EntitySet="KeyManager" />
+            <End Role="Room" EntitySet="Room" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AppCastModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AppUser">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="passwordSalt" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="enable2fa" Type="Boolean" Nullable="false" />
+          <Property Name="gender" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="role" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Role1" Relationship="Self.FK_AppUser_Role" FromRole="AppUser" ToRole="Role" />
+          <NavigationProperty Name="Chats" Relationship="Self.FK_Chat_AppUser" FromRole="AppUser" ToRole="Chat" />
+          <NavigationProperty Name="Files" Relationship="AppCastModel.FK_File_AppUser" FromRole="AppUser" ToRole="File" />
+          <NavigationProperty Name="FileShares" Relationship="AppCastModel.FK_FileShare_AppUser" FromRole="AppUser" ToRole="FileShare" />
+        </EntityType>
+        <EntityType Name="Chat">
+          <Key>
+            <PropertyRef Name="messageID" />
+            <PropertyRef Name="roomID" />
+          </Key>
+          <Property Name="messageID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="roomID" Type="Int32" Nullable="false" />
+          <Property Name="userID" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="message" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="messageDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="AppUser" Relationship="Self.FK_Chat_AppUser" FromRole="Chat" ToRole="AppUser" />
+          <NavigationProperty Name="Room" Relationship="Self.FK_Chat_Room" FromRole="Chat" ToRole="Room" />
+        </EntityType>
+        <EntityType Name="KeyManager">
+          <Key>
+            <PropertyRef Name="keyID" />
+          </Key>
+          <Property Name="keyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="symKey" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="symKey2" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Rooms" Relationship="Self.FK_Room_KeyManager" FromRole="KeyManager" ToRole="Room" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="roleID" />
+          </Key>
+          <Property Name="roleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="roleName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AppUsers" Relationship="Self.FK_AppUser_Role" FromRole="Role" ToRole="AppUser" />
+        </EntityType>
+        <EntityType Name="Room">
+          <Key>
+            <PropertyRef Name="roomID" />
+          </Key>
+          <Property Name="roomID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="roomTitle" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="roomUser" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="keyID" Type="Int32" Nullable="false" />
+          <Property Name="createDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Chats" Relationship="Self.FK_Chat_Room" FromRole="Room" ToRole="Chat" />
+          <NavigationProperty Name="KeyManager" Relationship="Self.FK_Room_KeyManager" FromRole="Room" ToRole="KeyManager" />
+          <Property Name="createUser" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_AppUser_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="roleID" />
+            </Principal>
+            <Dependent Role="AppUser">
+              <PropertyRef Name="role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chat_AppUser">
+          <End Role="AppUser" Type="Self.AppUser" Multiplicity="1" />
+          <End Role="Chat" Type="Self.Chat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Chat">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chat_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="1" />
+          <End Role="Chat" Type="Self.Chat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="roomID" />
+            </Principal>
+            <Dependent Role="Chat">
+              <PropertyRef Name="roomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Room_KeyManager">
+          <End Role="KeyManager" Type="Self.KeyManager" Multiplicity="1" />
+          <End Role="Room" Type="Self.Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KeyManager">
+              <PropertyRef Name="keyID" />
+            </Principal>
+            <Dependent Role="Room">
+              <PropertyRef Name="keyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AppCastEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AppUsers" EntityType="Self.AppUser" />
+          <EntitySet Name="Chats" EntityType="Self.Chat" />
+          <EntitySet Name="KeyManagers" EntityType="Self.KeyManager" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="Rooms" EntityType="Self.Room" />
+          <AssociationSet Name="FK_AppUser_Role" Association="Self.FK_AppUser_Role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="AppUser" EntitySet="AppUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chat_AppUser" Association="Self.FK_Chat_AppUser">
+            <End Role="AppUser" EntitySet="AppUsers" />
+            <End Role="Chat" EntitySet="Chats" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chat_Room" Association="Self.FK_Chat_Room">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="Chat" EntitySet="Chats" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Room_KeyManager" Association="Self.FK_Room_KeyManager">
+            <End Role="KeyManager" EntitySet="KeyManagers" />
+            <End Role="Room" EntitySet="Rooms" />
+          </AssociationSet>
+          <EntitySet Name="Files" EntityType="AppCastModel.File" />
+          <AssociationSet Name="FK_File_AppUser" Association="AppCastModel.FK_File_AppUser">
+            <End Role="AppUser" EntitySet="AppUsers" />
+            <End Role="File" EntitySet="Files" />
+          </AssociationSet>
+          <EntitySet Name="FileShares" EntityType="AppCastModel.FileShare" />
+          <AssociationSet Name="FK_FileShare_AppUser" Association="AppCastModel.FK_FileShare_AppUser">
+            <End Role="AppUser" EntitySet="AppUsers" />
+            <End Role="FileShare" EntitySet="FileShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileShare_File" Association="AppCastModel.FK_FileShare_File">
+            <End Role="File" EntitySet="Files" />
+            <End Role="FileShare" EntitySet="FileShares" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="File">
+          <Key>
+            <PropertyRef Name="fileID" />
+          </Key>
+          <Property Name="fileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="filePath" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="fileName" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="fileDesc" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="uploadDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="uploaderID" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AppUser" Relationship="AppCastModel.FK_File_AppUser" FromRole="File" ToRole="AppUser" />
+          <NavigationProperty Name="FileShares" Relationship="AppCastModel.FK_FileShare_File" FromRole="File" ToRole="FileShare" />
+        </EntityType>
+        <Association Name="FK_File_AppUser">
+          <End Type="AppCastModel.AppUser" Role="AppUser" Multiplicity="1" />
+          <End Type="AppCastModel.File" Role="File" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="File">
+              <PropertyRef Name="uploaderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FileShare">
+          <Key>
+            <PropertyRef Name="fileID" />
+            <PropertyRef Name="shareUser" />
+          </Key>
+          <Property Name="fileID" Type="Int32" Nullable="false" />
+          <Property Name="shareUser" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="shareDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="permission" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AppUser" Relationship="AppCastModel.FK_FileShare_AppUser" FromRole="FileShare" ToRole="AppUser" />
+          <NavigationProperty Name="File" Relationship="AppCastModel.FK_FileShare_File" FromRole="FileShare" ToRole="File" />
+        </EntityType>
+        <Association Name="FK_FileShare_AppUser">
+          <End Type="AppCastModel.AppUser" Role="AppUser" Multiplicity="1" />
+          <End Type="AppCastModel.FileShare" Role="FileShare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppUser">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="FileShare">
+              <PropertyRef Name="shareUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileShare_File">
+          <End Type="AppCastModel.File" Role="File" Multiplicity="1" />
+          <End Type="AppCastModel.FileShare" Role="FileShare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="File">
+              <PropertyRef Name="fileID" />
+            </Principal>
+            <Dependent Role="FileShare">
+              <PropertyRef Name="fileID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AppCastModelStoreContainer" CdmEntityContainer="AppCastEntities">
+          <EntitySetMapping Name="AppUsers">
+            <EntityTypeMapping TypeName="AppCastModel.AppUser">
+              <MappingFragment StoreEntitySet="AppUser">
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="passwordSalt" ColumnName="passwordSalt" />
+                <ScalarProperty Name="enable2fa" ColumnName="enable2fa" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="role" ColumnName="role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Chats">
+            <EntityTypeMapping TypeName="AppCastModel.Chat">
+              <MappingFragment StoreEntitySet="Chat">
+                <ScalarProperty Name="messageID" ColumnName="messageID" />
+                <ScalarProperty Name="roomID" ColumnName="roomID" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="message" ColumnName="message" />
+                <ScalarProperty Name="messageDate" ColumnName="messageDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KeyManagers">
+            <EntityTypeMapping TypeName="AppCastModel.KeyManager">
+              <MappingFragment StoreEntitySet="KeyManager">
+                <ScalarProperty Name="keyID" ColumnName="keyID" />
+                <ScalarProperty Name="symKey" ColumnName="symKey" />
+                <ScalarProperty Name="symKey2" ColumnName="symKey2" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="AppCastModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="roleID" ColumnName="roleID" />
+                <ScalarProperty Name="roleName" ColumnName="roleName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rooms">
+            <EntityTypeMapping TypeName="AppCastModel.Room">
+              <MappingFragment StoreEntitySet="Room">
+                <ScalarProperty Name="createUser" ColumnName="createUser" />
+                <ScalarProperty Name="roomID" ColumnName="roomID" />
+                <ScalarProperty Name="roomTitle" ColumnName="roomTitle" />
+                <ScalarProperty Name="roomUser" ColumnName="roomUser" />
+                <ScalarProperty Name="keyID" ColumnName="keyID" />
+                <ScalarProperty Name="createDate" ColumnName="createDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Files">
+            <EntityTypeMapping TypeName="AppCastModel.File">
+              <MappingFragment StoreEntitySet="Files">
+                <ScalarProperty Name="uploaderID" ColumnName="uploaderID" />
+                <ScalarProperty Name="uploadDate" ColumnName="uploadDate" />
+                <ScalarProperty Name="fileDesc" ColumnName="fileDesc" />
+                <ScalarProperty Name="fileName" ColumnName="fileName" />
+                <ScalarProperty Name="filePath" ColumnName="filePath" />
+                <ScalarProperty Name="fileID" ColumnName="fileID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileShares">
+            <EntityTypeMapping TypeName="AppCastModel.FileShare">
+              <MappingFragment StoreEntitySet="FileShare">
+                <ScalarProperty Name="permission" ColumnName="permission" />
+                <ScalarProperty Name="shareDate" ColumnName="shareDate" />
+                <ScalarProperty Name="shareUser" ColumnName="shareUser" />
+                <ScalarProperty Name="fileID" ColumnName="fileID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
