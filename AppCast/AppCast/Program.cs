@@ -16,7 +16,7 @@ namespace AppCast
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Meeting());
+            Application.Run(new Login());
         }
     }
 }

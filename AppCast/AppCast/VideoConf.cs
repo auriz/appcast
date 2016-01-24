@@ -20,26 +20,25 @@ namespace AppCast
     public partial class VideoConf : MetroForm, IVideoConferenceServiceCallback
     {
         VideoServiceReference.VideoConferenceServiceClient video;
-        bool webcam = false;
         public VideoConf()
         {
             InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
             video = new VideoServiceReference.VideoConferenceServiceClient(new InstanceContext(this), "NetTcpBinding_IVideoConferenceService");
             video.Subscribe();
-            video.PublishText(Environment.UserName + " Has Join The Room");
+            video.PublishText("admin has joined the room.");
         }
 
         #region WebCam API
-        const short WM_CAP = 1024;
+        const short WM_CAP = 0x400;//1024;
         const int WM_CAP_DRIVER_CONNECT = WM_CAP + 10;
         const int WM_CAP_DRIVER_DISCONNECT = WM_CAP + 11;
         const int WM_CAP_EDIT_COPY = WM_CAP + 30;
         const int WM_CAP_SET_PREVIEW = WM_CAP + 50;
         const int WM_CAP_SET_PREVIEWRATE = WM_CAP + 52;
         const int WM_CAP_SET_SCALE = WM_CAP + 53;
-        const int WS_CHILD = 1073741824;
-        const int WS_VISIBLE = 268435456;
+        const int WS_CHILD = 0x40000000;//1073741824;
+        const int WS_VISIBLE = 0x10000000;//268435456;
         const short SWP_NOMOVE = 2;
         const short SWP_NOSIZE = 1;
         const short SWP_NOZORDER = 4;
@@ -47,8 +46,7 @@ namespace AppCast
         int iDevice = 0;
         int hHwnd;
         [System.Runtime.InteropServices.DllImport("user32", EntryPoint = "SendMessageA")]
-        static extern int SendMessage(int hwnd, int wMsg, int wParam, [MarshalAs(UnmanagedType.AsAny)] 
-			object lParam);
+        static extern int SendMessage(int hwnd, int wMsg, int wParam, [MarshalAs(UnmanagedType.AsAny)] object lParam);
         [System.Runtime.InteropServices.DllImport("user32", EntryPoint = "SetWindowPos")]
         static extern int SetWindowPos(int hwnd, int hWndInsertAfter, int x, int y, int cx, int cy, int wFlags);
         [System.Runtime.InteropServices.DllImport("user32")]
@@ -59,6 +57,7 @@ namespace AppCast
         static extern bool capGetDriverDescriptionA(short wDriver, string lpszName, int cbName, string lpszVer, int cbVer);
         private void OpenPreviewWindow()
         {
+
             int iHeight = pictureBox1.Height;
             int iWidth = pictureBox1.Width;
             // 
@@ -68,7 +67,8 @@ namespace AppCast
             // 
             //  Connect to device
             // 
-            if (SendMessage(hHwnd, WM_CAP_DRIVER_CONNECT, iDevice, 0) == 1)
+
+            if (SendMessage(hHwnd, WM_CAP_DRIVER_CONNECT, iDevice, 0) > 0)
             {
                 // 
                 // Set the preview scale
@@ -87,7 +87,9 @@ namespace AppCast
                 // 
                 SetWindowPos(hHwnd, HWND_BOTTOM, 0, 0, iWidth, iHeight, (SWP_NOMOVE | SWP_NOZORDER));
 
-                webcam = true;
+                button3.Enabled = false;
+                button1.Enabled = true;
+                button5.Enabled = true;
             }
             else
             {
@@ -95,6 +97,7 @@ namespace AppCast
                 //  Error connecting to device close window
                 //  
                 DestroyWindow(hHwnd);
+                MessageBox.Show("Error");
             }
         }
         private void ClosePreviewWindow()
@@ -165,7 +168,7 @@ namespace AppCast
 
         void Publish_Text(string MSG)
         {
-            string FullMSG = Environment.UserName + ">> " + MSG;
+            string FullMSG = "admin >> " + MSG;
             video.PublishText(FullMSG);
             textBox1.Clear();
             textBox1.Focus();
@@ -188,9 +191,6 @@ namespace AppCast
         {
             iDevice = 0;
             OpenPreviewWindow();
-            button3.Enabled = false;
-            button1.Enabled = true;
-            button5.Enabled = true;
         }
 
         private void FramesTimer_Tick(object sender, EventArgs e)

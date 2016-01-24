@@ -29,6 +29,15 @@
           <Property Name="message" Type="nvarchar" MaxLength="1024" Nullable="false" />
           <Property Name="messageDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="userID" />
+            <PropertyRef Name="friendID" />
+          </Key>
+          <Property Name="userID" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="friendID" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="status" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
         <EntityType Name="Files">
           <Key>
             <PropertyRef Name="fileID" />
@@ -49,6 +58,8 @@
           <Property Name="shareUser" Type="nvarchar" MaxLength="64" Nullable="false" />
           <Property Name="shareDate" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="permission" Type="int" Nullable="false" />
+          <Property Name="fileName" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="fileOwner" Type="nvarchar" MaxLength="64" />
         </EntityType>
         <EntityType Name="KeyManager">
           <Key>
@@ -56,7 +67,19 @@
           </Key>
           <Property Name="keyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="symKey" Type="nvarchar" MaxLength="512" Nullable="false" />
-          <Property Name="symKey2" Type="nvarchar" MaxLength="512" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="notificationID" />
+          </Key>
+          <Property Name="notificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fromUser" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="toUser" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="haveRead" Type="bit" Nullable="false" />
+          <Property Name="eventType" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="dateTime" Type="datetime" Nullable="false" />
+          <Property Name="roomID" Type="int" Nullable="false" />
+          <Property Name="sharefilename" Type="nvarchar" MaxLength="64" Nullable="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -163,9 +186,11 @@
         <EntityContainer Name="AppCastModelStoreContainer">
           <EntitySet Name="AppUser" EntityType="Self.AppUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Chat" EntityType="Self.Chat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contact" EntityType="Self.Contact" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileShare" EntityType="Self.FileShare" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="KeyManager" EntityType="Self.KeyManager" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notification" EntityType="Self.Notification" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_AppUser_Role" Association="Self.FK_AppUser_Role">
@@ -237,7 +262,6 @@
           </Key>
           <Property Name="keyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="symKey" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="symKey2" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Rooms" Relationship="Self.FK_Room_KeyManager" FromRole="KeyManager" ToRole="Room" />
         </EntityType>
         <EntityType Name="Role">
@@ -345,6 +369,8 @@
             <End Role="File" EntitySet="Files" />
             <End Role="FileShare" EntitySet="FileShares" />
           </AssociationSet>
+          <EntitySet Name="Contacts" EntityType="AppCastModel.Contact" />
+          <EntitySet Name="Notifications" EntityType="AppCastModel.Notification" />
           </EntityContainer>
         <EntityType Name="File">
           <Key>
@@ -382,6 +408,8 @@
           <Property Name="permission" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AppUser" Relationship="AppCastModel.FK_FileShare_AppUser" FromRole="FileShare" ToRole="AppUser" />
           <NavigationProperty Name="File" Relationship="AppCastModel.FK_FileShare_File" FromRole="FileShare" ToRole="File" />
+          <Property Name="fileName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="fileOwner" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_FileShare_AppUser">
           <End Type="AppCastModel.AppUser" Role="AppUser" Multiplicity="1" />
@@ -407,6 +435,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="userID" />
+            <PropertyRef Name="friendID" />
+          </Key>
+          <Property Name="userID" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="friendID" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="notificationID" />
+          </Key>
+          <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fromUser" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="toUser" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="haveRead" Type="Boolean" Nullable="false" />
+          <Property Name="eventType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="dateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="roomID" Type="Int32" Nullable="false" />
+          <Property Name="sharefilename" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -443,7 +493,6 @@
               <MappingFragment StoreEntitySet="KeyManager">
                 <ScalarProperty Name="keyID" ColumnName="keyID" />
                 <ScalarProperty Name="symKey" ColumnName="symKey" />
-                <ScalarProperty Name="symKey2" ColumnName="symKey2" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -482,10 +531,35 @@
           <EntitySetMapping Name="FileShares">
             <EntityTypeMapping TypeName="AppCastModel.FileShare">
               <MappingFragment StoreEntitySet="FileShare">
+                <ScalarProperty Name="fileOwner" ColumnName="fileOwner" />
+                <ScalarProperty Name="fileName" ColumnName="fileName" />
                 <ScalarProperty Name="permission" ColumnName="permission" />
                 <ScalarProperty Name="shareDate" ColumnName="shareDate" />
                 <ScalarProperty Name="shareUser" ColumnName="shareUser" />
                 <ScalarProperty Name="fileID" ColumnName="fileID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contacts">
+            <EntityTypeMapping TypeName="AppCastModel.Contact">
+              <MappingFragment StoreEntitySet="Contact">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="friendID" ColumnName="friendID" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="AppCastModel.Notification">
+              <MappingFragment StoreEntitySet="Notification">
+                <ScalarProperty Name="sharefilename" ColumnName="sharefilename" />
+                <ScalarProperty Name="roomID" ColumnName="roomID" />
+                <ScalarProperty Name="dateTime" ColumnName="dateTime" />
+                <ScalarProperty Name="eventType" ColumnName="eventType" />
+                <ScalarProperty Name="haveRead" ColumnName="haveRead" />
+                <ScalarProperty Name="toUser" ColumnName="toUser" />
+                <ScalarProperty Name="fromUser" ColumnName="fromUser" />
+                <ScalarProperty Name="notificationID" ColumnName="notificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -48,7 +48,6 @@
             this.Controls.Add(this.metroButton1);
             this.Name = "PopupForm";
             this.Resizable = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Success";
             this.ResumeLayout(false);
 

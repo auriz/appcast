@@ -19,6 +19,8 @@
         <EntityTypeShape EntityType="AppCastModel.FileShare" Width="1.5" PointX="7.5" PointY="4.125" />
         <AssociationConnector Association="AppCastModel.FK_FileShare_AppUser" />
         <AssociationConnector Association="AppCastModel.FK_FileShare_File" />
+        <EntityTypeShape EntityType="AppCastModel.Contact" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="AppCastModel.Notification" Width="1.5" PointX="7.375" PointY="7.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

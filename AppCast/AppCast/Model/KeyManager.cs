@@ -21,7 +21,6 @@ namespace AppCast.Model
     
         public int keyID { get; set; }
         public string symKey { get; set; }
-        public string symKey2 { get; set; }
     
         public virtual ICollection<Room> Rooms { get; set; }
     }

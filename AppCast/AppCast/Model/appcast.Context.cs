@@ -32,5 +32,7 @@ namespace AppCast.Model
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<FileShare> FileShares { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
     }
 }

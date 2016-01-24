@@ -18,6 +18,8 @@ namespace AppCast.Model
         public string shareUser { get; set; }
         public string shareDate { get; set; }
         public int permission { get; set; }
+        public string fileName { get; set; }
+        public string fileOwner { get; set; }
     
         public virtual AppUser AppUser { get; set; }
         public virtual File File { get; set; }
